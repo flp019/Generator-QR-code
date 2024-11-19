@@ -1,0 +1,8 @@
+id: qr-code-generator
+name: Gerador de QR Code
+version: 1.0.0
+description: Um aplicativo para gerar QR Codes.
+repository: https://github.com/flp019/Generator-QR-code
+type: web
+ports:
+  - 80:80
