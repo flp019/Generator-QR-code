@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de QR Code Moderno</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #111;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            margin-top: 2rem;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 2rem;
+            color: #4CAF50;
+            font-size: 2.5rem;
+        }
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #4CAF50;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        #qrcode {
+            margin: 2rem 0;
+            display: flex;
+            justify-content: center;
+        }
+        #qrImage {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        #message {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gerador de QR Code</h1>
+        <div class="input-group">
+            <input type="text" id="text" placeholder="Digite o texto ou URL para gerar o QR Code">
+        </div>
+        <button onclick="generateQR()">Gerar QR Code</button>
+        <div id="qrcode">
+            <img id="qrImage" style="display: none;" />
+        </div>
+        <button id="downloadBtn" onclick="downloadQR()" style="display: none;">Download QR Code</button>
+        <div id="message" style="display: none;">Deseja gerar outro QR Code? <button onclick="reset()">Sim</button></div>
+    </div>
+
+    <script>
+        function generateQR() {
+            const text = document.getElementById('text').value;
+            if (text) {
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(text)}`;
+                const qrImage = document.getElementById('qrImage');
+                qrImage.src = qrUrl;
+                qrImage.style.display = 'block';
+                document.getElementById('downloadBtn').style.display = 'block';
+                document.getElementById('message').style.display = 'none';
+            }
+        }
+
+        function downloadQR() {
+            const qrImage = document.getElementById('qrImage');
+            fetch(qrImage.src)
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'qrcode.png';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                })
+                .then(() => {
+                    document.getElementById('qrImage').style.display = 'none';
+                    document.getElementById('downloadBtn').style.display = 'none';
+                    document.getElementById('message').style.display = 'block';
+                })
+                .catch(err => console.error('Erro ao baixar QR Code:', err));
+        }
+
+        function reset() {
+            document.getElementById('text').value = '';
+            document.getElementById('message').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
