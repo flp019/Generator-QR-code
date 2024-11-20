@@ -3,6 +3,13 @@ name: Gerador de QR Code
 version: 1.0.0
 description: Um aplicativo para gerar QR Codes.
 repository: https://github.com/flp019/Generator-QR-code
-type: web
-ports:
-  - 80:80
+type: app
+icon: https://link-para-icone.png  # Opcional: Adicione um ícone para seu app.
+dependencies:
+  - docker
+services:
+  qr-generator:
+    build:
+      context: .
+    ports:
+      - "3000:80"  # Mapeia a porta interna 80 do container para a porta 3000 do servidor
